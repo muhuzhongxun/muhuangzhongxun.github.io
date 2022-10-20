@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>docker创建mongo容器并远程连接 - 牧户仲寻的个人博客</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="欢迎来到牧户仲寻的个人博客">
+    <meta name="keywords" content="Java">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/icon/灶门祢豆子.ico" type="image/x-icon" />
+    <meta name="description" content="前提：安装好docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker创建mongo容器并远程连接">
+<meta property="og:url" content="http://muhuzhongxun.ltd/blog/2022/09/06/docker%E5%88%9B%E5%BB%BAmongo%E5%AE%B9%E5%99%A8%E5%B9%B6%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/index.html">
+<meta property="og:site_name" content="牧户仲寻的个人博客">
+<meta property="og:description" content="前提：安装好docker">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-06T07:40:00.000Z">
+<meta property="article:modified_time" content="2022-09-06T08:17:20.628Z">
+<meta property="article:author" content="muhuzhongxun">
+<meta property="article:tag" content="mongo">
+<meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/blog/css/style.css?v=1666274234077">
+    
+    <link rel="stylesheet" href="/blog/lib/iconfont/iconfont.css?v=1666274234077">
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/background/0.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/blog/" title="muhuzhongxun" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/images/灶门祢豆子.png" alt="muhuzhongxun"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/blog/" title="muhuzhongxun">
+            <img src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/images/灶门祢豆子.png" alt="muhuzhongxun" alt="muhuzhongxun">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>12</div>
+        <div><span>标签</span>10</div>
+        <div><span>分类</span>5</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/archive.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/image.html" title="次元图库">
+            <i class="mdui-list-item-icon nexmoefont icon-coffee"></i>
+            <div class="mdui-list-item-content">
+                次元图库
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://jq.qq.com/?_wv=1027&k=5CfKHun" target="_blank" mdui-tooltip="{content: 'QQ群'}" style="color: rgb(249, 174, 8);background-color: rgba(249, 174, 8, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="https://space.bilibili.com/35139657" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/muhuzhongxun" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://docs.nexmoe.com/" target="_blank" mdui-tooltip="{content: 'Nexmoe文档'}" style="color: rgb(51, 0, 51);background-color: rgba(51, 0, 51, .15);">
+            <i class="nexmoefont icon-container"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/Docker/">Docker</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/面试/Java/">Java</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/开发工具/">开发工具</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/面试/">面试</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/blog/tags/Git/" style="font-size: 10px;">Git</a> <a href="/blog/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blog/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/blog/tags/Markdown/" style="font-size: 20px;">Markdown</a> <a href="/blog/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/blog/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/blog/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/blog/tags/mongo/" style="font-size: 20px;">mongo</a> <a href="/blog/tags/%E5%85%B3%E9%94%AE%E5%AD%97/" style="font-size: 10px;">关键字</a> <a href="/blog/tags/%E6%A6%82%E5%BF%B5/" style="font-size: 20px;">概念</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2022 muhuzhongxun
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+         <br><img src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/images/beian.png"> <a href="https://beian.miit.gov.cn/" style="color:#f72b07" target="_blank">粤ICP备2021115150号-1</a><br> <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> 
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/background/2.jpg" data-sizes="auto" alt="docker创建mongo容器并远程连接" class="lazyload">
+              <h1>docker创建mongo容器并远程连接</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年09月06日</a>
+    <a><i class="nexmoefont icon-areachart"></i>201 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+</div>
+
+      
+
+      <p>前提：安装好docker</p>
+<span id="more"></span>
+
+<p>1.拉去mongo镜像<a target="_blank" rel="noopener" href="https://hub.docker.com/_/mongo">Docker Hub</a></p>
+<p><code>docker pull mongo</code></p>
+<p>2.创建docker的局域网名为mongo-network</p>
+<p><code>docker network create some-network</code></p>
+<p>3.运行mongo容器。 -p设置映射端口；-d 后台运行容器；–network选择docker的局域网；–name 设置容器Name；-e MONGO_INITDB_ROOT_USERNAME用户名；-e MONGO_INITDB_ROOT_PASSWORD 密码；</p>
+<p><code>docker run -p 27017:27017 -d --network some-network --name some-mongo -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret mongo</code></p>
+<p>4.连接mongo实例。-rm:容器执行完会自动删除.执行指令（mongosh –host * -u -p …）</p>
+<p><code>docker run -it --rm --network some-network mongo  mongosh --host some-mongo  -u mongoadmin  -p secret  --authenticationDatabase admin  mongodb</code></p>
+<p>5.宝塔和云服务器开放端口27017。</p>
+<p>6.navicat连接mongo。（连接名：ECS_docker_mongo、主机：云服务器ip、端口27017、验证：password、验证数据库：默认admin、用户名：mongoadmin、密码：secret）</p>
+<p>相关网站：</p>
+<p><a target="_blank" rel="noopener" href="https://hub.docker.com/_/mongo">DockerHub之mongo介绍</a></p>
+<p><a href="%5Bmongosh%5D(https://www.mongodb.com/docs/mongodb-shell/connect/)">mongosh相关指令部署</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>muhuzhongxun<br>
+        <strong>本文链接：</strong><a href="http://muhuzhongxun.ltd/blog/2022/09/06/docker%E5%88%9B%E5%BB%BAmongo%E5%AE%B9%E5%99%A8%E5%B9%B6%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/" title="http:&#x2F;&#x2F;muhuzhongxun.ltd&#x2F;blog&#x2F;2022&#x2F;09&#x2F;06&#x2F;docker%E5%88%9B%E5%BB%BAmongo%E5%AE%B9%E5%99%A8%E5%B9%B6%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5&#x2F;" target="_blank" rel="noopener">http:&#x2F;&#x2F;muhuzhongxun.ltd&#x2F;blog&#x2F;2022&#x2F;09&#x2F;06&#x2F;docker%E5%88%9B%E5%BB%BAmongo%E5%AE%B9%E5%99%A8%E5%B9%B6%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/blog/categories/Docker/">Docker</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/blog/tags/mongo/" rel="tag">mongo</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/blog/js/app.js?v=1666274234079"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>

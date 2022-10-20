@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>JVM基础 - 牧户仲寻的个人博客</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="欢迎来到牧户仲寻的个人博客">
+    <meta name="keywords" content="Java">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/icon/灶门祢豆子.ico" type="image/x-icon" />
+    <meta name="description" content="JVM基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM基础">
+<meta property="og:url" content="http://muhuzhongxun.ltd/blog/2022/02/24/JVM%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="牧户仲寻的个人博客">
+<meta property="og:description" content="JVM基础">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://muhuzhongxun.ltd/images/screenshot/jvm01.png">
+<meta property="article:published_time" content="2022-02-24T12:32:48.000Z">
+<meta property="article:modified_time" content="2022-10-20T13:56:18.234Z">
+<meta property="article:author" content="muhuzhongxun">
+<meta property="article:tag" content="jvm">
+<meta property="article:tag" content="概念">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://muhuzhongxun.ltd/images/screenshot/jvm01.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/blog/css/style.css?v=1666274234086">
+    
+    <link rel="stylesheet" href="/blog/lib/iconfont/iconfont.css?v=1666274234086">
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/background/0.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/blog/" title="muhuzhongxun" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/images/灶门祢豆子.png" alt="muhuzhongxun"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/blog/" title="muhuzhongxun">
+            <img src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/images/灶门祢豆子.png" alt="muhuzhongxun" alt="muhuzhongxun">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>12</div>
+        <div><span>标签</span>10</div>
+        <div><span>分类</span>5</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/archive.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/image.html" title="次元图库">
+            <i class="mdui-list-item-icon nexmoefont icon-coffee"></i>
+            <div class="mdui-list-item-content">
+                次元图库
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/blog/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://jq.qq.com/?_wv=1027&k=5CfKHun" target="_blank" mdui-tooltip="{content: 'QQ群'}" style="color: rgb(249, 174, 8);background-color: rgba(249, 174, 8, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="https://space.bilibili.com/35139657" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/muhuzhongxun" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://docs.nexmoe.com/" target="_blank" mdui-tooltip="{content: 'Nexmoe文档'}" style="color: rgb(51, 0, 51);background-color: rgba(51, 0, 51, .15);">
+            <i class="nexmoefont icon-container"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/Docker/">Docker</a>
+          <span class="category-list-count">3</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/面试/Java/">Java</a>
+          <span class="category-list-count">2</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/开发工具/">开发工具</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/blog/categories/面试/">面试</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/blog/tags/Git/" style="font-size: 10px;">Git</a> <a href="/blog/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blog/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/blog/tags/Markdown/" style="font-size: 20px;">Markdown</a> <a href="/blog/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/blog/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/blog/tags/jvm/" style="font-size: 10px;">jvm</a> <a href="/blog/tags/mongo/" style="font-size: 20px;">mongo</a> <a href="/blog/tags/%E5%85%B3%E9%94%AE%E5%AD%97/" style="font-size: 10px;">关键字</a> <a href="/blog/tags/%E6%A6%82%E5%BF%B5/" style="font-size: 20px;">概念</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2022 muhuzhongxun
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+         <br><img src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/images/beian.png"> <a href="https://beian.miit.gov.cn/" style="color:#f72b07" target="_blank">粤ICP备2021115150号-1</a><br> <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span> 
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/muhuzhongxun/blog_image@latest/background/0.jpg" data-sizes="auto" alt="JVM基础" class="lazyload">
+              <h1>JVM基础</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年02月24日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.3k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a>
+</div>
+
+      
+
+      <p>JVM基础</p>
+<span id="more"></span>
+
+<h1 id="谈谈你对java的理解？"><a href="#谈谈你对java的理解？" class="headerlink" title="谈谈你对java的理解？"></a>谈谈你对java的理解？</h1><ul>
+<li>平台无关性（ Java 虚拟机实现平台无关性）； </li>
+<li>面向对象（封装，继承，多态）； </li>
+<li>支持多线程（ C++ 语言没有内置的多线程机制，因此必须调用操作系统的多线程功能来进行多线程程序设计，而 Java 语言却提供了多线程支持）； </li>
+<li>GC自动回收机制</li>
+<li>支持网络编程并且很方便（ Java 语言诞生本身就是为简化网络编程设计的，因此 Java 语言不仅支持网络编程而且很方便）； </li>
+<li>编译与解释并存；</li>
+<li>异常处理</li>
+</ul>
+<h2 id="平台无关性"><a href="#平台无关性" class="headerlink" title="平台无关性"></a>平台无关性</h2><p>javac 会对程序的语法、句法、语义进行检查；若无误，则生成.class字节码文件</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="/images/screenshot/jvm01.png" alt="javac" class="lazyload"></p>
+<h3 id="为什么JVM不直接将源码解析成机器码去执行？"><a href="#为什么JVM不直接将源码解析成机器码去执行？" class="headerlink" title="为什么JVM不直接将源码解析成机器码去执行？"></a>为什么JVM不直接将源码解析成机器码去执行？</h3><ol>
+<li><p>准备工作：每次执行都需要各种检查</p>
+<p>        把源码转换成.class字节码文件时已经对程序进行了各种检查，若直接将源码解析成机器码去执行的话，由于解析时检查的结果都不会保留下来，这导致每次执行都要重新编译检查一遍，整体的性能都会收到影响。<br>为应对这种情况，我们引入了中间字节码文件，在源码转换成字节码文件后多次运行都不需要再进行各种校验和补全的。</p>
+</li>
+<li><p>兼容性：也可以将别的语言解析成字节码文件</p>
+</li>
+</ol>
+<h5 id="如何查看字节码"><a href="#如何查看字节码" class="headerlink" title="如何查看字节码"></a>如何查看字节码</h5><p>先javac 生成.class字节码文件，再用javap指定将字节码文件反编译。</p>
+<p>源码文件(ByteCodeSimple.java):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class ByteCodeSimple &#123;  </span><br><span class="line">    public static void main(String[] args) &#123;  </span><br><span class="line">        int i=1,j=5;  </span><br><span class="line">        i++;  </span><br><span class="line">        ++j;  </span><br><span class="line">        System.out.println(i);  </span><br><span class="line">        System.out.println(j);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行指令<code>javac ByteCodeSimple.java</code> 获得下列字节码文件(ByteCodeSimple.class):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class ByteCodeSimple &#123;</span><br><span class="line">    public ByteCodeSimple() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] var0) &#123;</span><br><span class="line">        byte var1 = 1;</span><br><span class="line">        byte var2 = 5;</span><br><span class="line">        int var3 = var1 + 1;</span><br><span class="line">        int var4 = var2 + 1;</span><br><span class="line">        System.out.println(var3);</span><br><span class="line">        System.out.println(var4);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>javap ByteCodeSimple.class</code> 反编译查看字节码文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class javabasic.bytecode.ByteCodeSimple &#123;</span><br><span class="line">  public javabasic.bytecode.ByteCodeSimple();</span><br><span class="line">    Code:</span><br><span class="line">       0: aload_0</span><br><span class="line">       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">       4: return</span><br><span class="line"></span><br><span class="line">  public static void main(java.lang.String[]);</span><br><span class="line">    Code:</span><br><span class="line">       0: iconst_1</span><br><span class="line">       1: istore_1</span><br><span class="line">       2: iconst_5</span><br><span class="line">       3: istore_2</span><br><span class="line">       4: iinc          1, 1</span><br><span class="line">       7: iinc          2, 1</span><br><span class="line">      10: getstatic     #7                  // Field java/lang/System.out:Ljava/io/PrintStream;</span><br><span class="line">      13: iload_1</span><br><span class="line">      14: invokevirtual #13                 // Method java/io/PrintStream.println:(I)V</span><br><span class="line">      17: getstatic     #7                  // Field java/lang/System.out:Ljava/io/PrintStream;</span><br><span class="line">      20: iload_2</span><br><span class="line">      21: invokevirtual #13                 // Method java/io/PrintStream.println:(I)V</span><br><span class="line">      24: return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="JVM如何加载-class文件"><a href="#JVM如何加载-class文件" class="headerlink" title="JVM如何加载.class文件"></a>JVM如何加载.class文件</h3><p>JVM主要由Class Loader将符合格式要求的class文件加载到内存，并通过Execution Engine去解析class文件的字节码提交到操作系统去执行</p>
+<p>JVM由</p>
+<ol>
+<li><p>Class Loader：根据特定格式将符合要求的class文件加载到内存中</p>
+</li>
+<li><p>Execution Engine：对命令进行解析</p>
+</li>
+<li><p>Native Interface：（本地接口）：融合不同开发语言的原生库为Java所用</p>
+</li>
+<li><p>Runtime Data Area⭐⭐：JVM内存空间结构模型</p>
+</li>
+</ol>
+<p>这四个部分组成。</p>
+<h3 id="什么是反射"><a href="#什么是反射" class="headerlink" title="什么是反射"></a>什么是反射</h3><p>官方陈述：JAVA 反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；这种动态获取信息以及动态调用对象方法的功能称为 java 语言的反射机制。</p>
+<h4 id="写一个反射的例子"><a href="#写一个反射的例子" class="headerlink" title="写一个反射的例子"></a>写一个反射的例子</h4><p>先创建一个Robot对象（私有属性name，公共方法sayHi()，私有方法throwHello()）:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Robot &#123;</span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    public void sayHi(String hellosentence) &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(hellosentence + &quot;&quot; + name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private String throwHello(String tag)&#123;</span><br><span class="line">        return &quot;Helllo &quot; + tag ;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>反射案例：（分别用了getDeclaredMethod(),getMethod(),getDeclaredField()三个常用的方法实现）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class ReflectSample &#123;</span><br><span class="line">    public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException &#123;</span><br><span class="line">        // 获取指定类，目的是对类的实例进行调用</span><br><span class="line">        Class rc = Class.forName(&quot;javabasic.reflect.Robot&quot;);</span><br><span class="line">        // 创建对象实例</span><br><span class="line">        Robot r = (Robot)rc.newInstance();</span><br><span class="line">        System.out.println(&quot;Class name is &quot; + rc.getName());</span><br><span class="line">        // 反射案例：</span><br><span class="line">        // Method（一般用于反射一个类方法或实例方法（包括抽象方法））</span><br><span class="line">        // 1.用getDeclaredMethod()</span><br><span class="line">        //  获取该类的所有方法，如public，protected，private,包类型的私有化方法、</span><br><span class="line">        //  但不能获取继承的方法、它实现的接口方法</span><br><span class="line">        Method getHello = rc.getDeclaredMethod(&quot;throwHello&quot;,String.class);</span><br><span class="line">        // Accessible属性默认是false，但获取的对象方法为private私有类型时必须要改为ture</span><br><span class="line">        getHello.setAccessible(true);</span><br><span class="line">        Object str = getHello.invoke(r,&quot;Bob&quot;);</span><br><span class="line">        System.out.println(&quot;getHello result is &quot; + str);</span><br><span class="line">        // 2.用getMethod()</span><br><span class="line">        //  只能获取public方法，以及继承和实现的接口方法</span><br><span class="line">        Method sayHi = rc.getMethod(&quot;sayHi&quot;, String.class);</span><br><span class="line">        sayHi.invoke(r,&quot;Welcome &quot;);</span><br><span class="line">        //Field（一般用于反射一个类（静态）字段或实例字段。成员属性）</span><br><span class="line">        // 3.用getDeclaredField()</span><br><span class="line">        //  获取指定类的所有声明的字段，即包括public、private和proteced，但是不包括父类的申明字段。</span><br><span class="line">        //  getField()作用：获取类的所有的公共（public）的字段，包括父类中的字段。</span><br><span class="line">        Field name = rc.getDeclaredField(&quot;name&quot;);</span><br><span class="line">        // 设置暴力反射--》private</span><br><span class="line">        name.setAccessible(true);</span><br><span class="line">        name.set(r,&quot;Alice&quot;);</span><br><span class="line">        sayHi.invoke(r,&quot;Welcome &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="谈谈Class-Loader"><a href="#谈谈Class-Loader" class="headerlink" title="谈谈Class Loader"></a>谈谈Class Loader</h2>
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>muhuzhongxun<br>
+        <strong>本文链接：</strong><a href="http://muhuzhongxun.ltd/blog/2022/02/24/JVM%E5%9F%BA%E7%A1%80/" title="http:&#x2F;&#x2F;muhuzhongxun.ltd&#x2F;blog&#x2F;2022&#x2F;02&#x2F;24&#x2F;JVM%E5%9F%BA%E7%A1%80&#x2F;" target="_blank" rel="noopener">http:&#x2F;&#x2F;muhuzhongxun.ltd&#x2F;blog&#x2F;2022&#x2F;02&#x2F;24&#x2F;JVM%E5%9F%BA%E7%A1%80&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/blog/categories/%E9%9D%A2%E8%AF%95/">面试</a><a class="nexmoefont icon-appstore-fill -link" href="/blog/categories/%E9%9D%A2%E8%AF%95/Java/">Java</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/blog/tags/jvm/" rel="tag">jvm</a> <a class="nexmoefont icon-tag-fill -none-link" href="/blog/tags/%E6%A6%82%E5%BF%B5/" rel="tag">概念</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%88%E8%B0%88%E4%BD%A0%E5%AF%B9java%E7%9A%84%E7%90%86%E8%A7%A3%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">谈谈你对java的理解？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B3%E5%8F%B0%E6%97%A0%E5%85%B3%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">平台无关性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88JVM%E4%B8%8D%E7%9B%B4%E6%8E%A5%E5%B0%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E6%88%90%E6%9C%BA%E5%99%A8%E7%A0%81%E5%8E%BB%E6%89%A7%E8%A1%8C%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">为什么JVM不直接将源码解析成机器码去执行？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E5%AD%97%E8%8A%82%E7%A0%81"><span class="toc-number">1.1.1.0.1.</span> <span class="toc-text">如何查看字节码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JVM%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD-class%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.2.</span> <span class="toc-text">JVM如何加载.class文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%B0%84"><span class="toc-number">1.1.3.</span> <span class="toc-text">什么是反射</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%99%E4%B8%80%E4%B8%AA%E5%8F%8D%E5%B0%84%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">写一个反射的例子</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%88%E8%B0%88Class-Loader"><span class="toc-number">1.2.</span> <span class="toc-text">谈谈Class Loader</span></a></li></ol></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/blog/js/app.js?v=1666274234098"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>
